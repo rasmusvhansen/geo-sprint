@@ -1,7 +1,7 @@
 import './style.css';
 import { clamp } from 'es-toolkit';
 
-const PLAYER_SIZE = 20;
+const PLAYER_SIZE = 10;
 const HEIGHT = 200;
 const CEILING = PLAYER_SIZE;
 const DECK = HEIGHT - PLAYER_SIZE;
@@ -107,7 +107,7 @@ function drawMap(map: State['map'], ctx: CanvasRenderingContext2D) {
     .forEach((o) => {
       if (o.type === 'spike') {
         ctx.fillStyle = 'red';
-        ctx.fillRect(o.x, o.y, 5, 20);
+        ctx.fillRect(o.x, o.y - 10, 5, 20);
       }
     });
 }
