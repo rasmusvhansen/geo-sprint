@@ -1,5 +1,5 @@
-import "./style.css";
-import { clamp } from "es-toolkit";
+import './style.css';
+import { clamp } from 'es-toolkit';
 
 const PLAYER_SIZE = 5;
 const HEIGHT = 200;
@@ -8,21 +8,28 @@ const DECK = HEIGHT - PLAYER_SIZE;
 const JUMP_FORCE = 3;
 
 let jump = false;
-document.body.addEventListener("keydown", (ev) => {
-  if (ev.key === " ") jump = true;
+document.body.addEventListener('keydown', (ev) => {
+  if (ev.key === ' ') jump = true;
+  if (ev.key === 'r') {
+    state = initialState;
+    canvas.classList.add('running');
+    canvas.classList.remove('animate');
+    setTimeout(() => canvas.classList.add('animate'));
+    gameLoop();
+  }
 });
-document.body.addEventListener("keyup", (ev) => {
-  if (ev.key === " ") jump = false;
+document.body.addEventListener('keyup', (ev) => {
+  if (ev.key === ' ') jump = false;
 });
 
-const debugEl = document.querySelector("#debug")!;
-const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
+const debugEl = document.querySelector('#debug')!;
+const canvas = document.querySelector('#canvas') as HTMLCanvasElement;
 canvas.height = HEIGHT;
-canvas.width = (HEIGHT * 16) / 9;
+canvas.width = (HEIGHT * 21) / 9;
 const aspect = canvas.width / canvas.height;
 console.log(aspect, canvas.width, canvas.height);
 
-const ctx = canvas.getContext("2d")!;
+const ctx = canvas.getContext('2d')!;
 
 const initialState = {
   gravity: 0.6,
@@ -33,12 +40,12 @@ const initialState = {
   dVertical: 0,
   collision: false,
   map: [
-    { type: "spike" as const, x: 50, y: DECK },
-    { type: "spike" as const, x: 70, y: DECK },
-    { type: "spike" as const, x: 100, y: DECK },
-    { type: "spike" as const, x: 120, y: DECK },
-    { type: "spike" as const, x: 140, y: DECK },
-    { type: "portal" as const, x: 80, y: DECK + 10 },
+    { type: 'spike' as const, x: 50, y: DECK },
+    { type: 'spike' as const, x: 70, y: DECK },
+    { type: 'spike' as const, x: 100, y: DECK },
+    { type: 'spike' as const, x: 120, y: DECK },
+    { type: 'spike' as const, x: 140, y: DECK },
+    { type: 'portal' as const, x: 80, y: DECK + 10 },
   ],
 };
 
@@ -46,15 +53,8 @@ type State = typeof initialState;
 
 function updateState(state: State, jump: boolean): State {
   const onGround = state.gravity > 0 ? state.y >= DECK : state.y <= CEILING;
-  const dVertical =
-    jump && onGround
-      ? JUMP_FORCE
-      : !onGround
-        ? state.dVertical - state.gravity
-        : 0;
-  const collision = state.map.some(
-    (o) => Math.abs(o.x - state.x) < 2 && Math.abs(o.y - state.y) < 2,
-  );
+  const dVertical = jump && onGround ? JUMP_FORCE : !onGround ? state.dVertical - state.gravity : 0;
+  const collision = state.map.some((o) => Math.abs(o.x - state.x) < 3 && Math.abs(o.y - state.y) < 3);
   return {
     gravity: state.gravity,
     jump,
@@ -82,9 +82,11 @@ function gameLoop() {
   drawPlayer(state, ctx);
   drawMap(state.map, ctx);
   if (state.collision) {
-    ctx.font = "50px serif";
-    ctx.fillStyle = "red";
-    ctx.fillText("GAME OVER", 50, 50, 100);
+    ctx.font = '50px serif';
+    ctx.fillStyle = 'red';
+    ctx.fillText('GAME OVER', 50, 50, 100);
+    canvas.classList.remove('running');
+
     return;
   }
 
@@ -92,22 +94,20 @@ function gameLoop() {
 }
 
 function drawPlayer(state: State, ctx: CanvasRenderingContext2D) {
-  ctx.fillStyle = "black";
+  ctx.fillStyle = 'black';
   ctx.fillRect(state.x, state.y, PLAYER_SIZE, PLAYER_SIZE);
 }
 
-function drawMap(map: State["map"], ctx: CanvasRenderingContext2D) {
+function drawMap(map: State['map'], ctx: CanvasRenderingContext2D) {
   map
     .filter((o) => o.x < canvas.width)
     .forEach((o) => {
-      if (o.type === "spike") {
-        ctx.fillStyle = "red";
+      if (o.type === 'spike') {
+        ctx.fillStyle = 'red';
         ctx.fillRect(o.x, o.y, 3, 5);
       }
     });
 }
-
-gameLoop();
 
 function writeDebug(state: State) {
   debugEl.textContent = `x: ${state.x.toFixed(2)}, y: ${state.y.toFixed(2)}, jump: ${state.jump}, gravity: ${state.gravity}, dVertical: ${state.dVertical.toFixed(3)}`;
