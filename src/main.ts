@@ -96,11 +96,6 @@ function drawPlayer(state: State, ctx: CanvasRenderingContext2D) {
   ctx.fillRect(state.x, state.y, PLAYER_SIZE, PLAYER_SIZE);
 }
 
-function writeDebug(state: State) {
-  debugEl.textContent = `x: ${state.x.toFixed(2)}, y: ${state.y.toFixed(2)}, jump: ${state.jump}, gravity: ${state.gravity}, dVertical: ${state.dVertical.toFixed(3)}`;
-}
-
-gameLoop();
 function drawMap(map: State["map"], ctx: CanvasRenderingContext2D) {
   map
     .filter((o) => o.x < canvas.width)
@@ -110,4 +105,10 @@ function drawMap(map: State["map"], ctx: CanvasRenderingContext2D) {
         ctx.fillRect(o.x, o.y, 3, 5);
       }
     });
+}
+
+gameLoop();
+
+function writeDebug(state: State) {
+  debugEl.textContent = `x: ${state.x.toFixed(2)}, y: ${state.y.toFixed(2)}, jump: ${state.jump}, gravity: ${state.gravity}, dVertical: ${state.dVertical.toFixed(3)}`;
 }
