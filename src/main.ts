@@ -1,11 +1,12 @@
 import './style.css';
 import { clamp } from 'es-toolkit';
 
-const PLAYER_SIZE = 5;
+const PLAYER_SIZE = 20;
 const HEIGHT = 200;
 const CEILING = PLAYER_SIZE;
 const DECK = HEIGHT - PLAYER_SIZE;
-const JUMP_FORCE = 3;
+const JUMP_FORCE = 5;
+const COLLISION_MARGIN = 7;
 
 let jump = false;
 document.body.addEventListener('keydown', (ev) => {
@@ -36,15 +37,15 @@ const initialState = {
   jump: false,
   x: 10,
   y: DECK,
-  speed: 1.8,
+  speed: 2.2,
   dVertical: 0,
   collision: false,
   map: [
-    { type: 'spike' as const, x: 50, y: DECK },
     { type: 'spike' as const, x: 70, y: DECK },
-    { type: 'spike' as const, x: 100, y: DECK },
-    { type: 'spike' as const, x: 120, y: DECK },
-    { type: 'spike' as const, x: 140, y: DECK },
+    { type: 'spike' as const, x: 110, y: DECK },
+    { type: 'spike' as const, x: 160, y: DECK },
+    { type: 'spike' as const, x: 200, y: DECK },
+    { type: 'spike' as const, x: 240, y: DECK },
     { type: 'portal' as const, x: 80, y: DECK + 10 },
   ],
 };
@@ -54,7 +55,9 @@ type State = typeof initialState;
 function updateState(state: State, jump: boolean): State {
   const onGround = state.gravity > 0 ? state.y >= DECK : state.y <= CEILING;
   const dVertical = jump && onGround ? JUMP_FORCE : !onGround ? state.dVertical - state.gravity : 0;
-  const collision = state.map.some((o) => Math.abs(o.x - state.x) < 3 && Math.abs(o.y - state.y) < 3);
+  const collision = state.map.some(
+    (o) => Math.abs(o.x - state.x) < COLLISION_MARGIN && Math.abs(o.y - state.y) < COLLISION_MARGIN,
+  );
   return {
     gravity: state.gravity,
     jump,
@@ -104,7 +107,7 @@ function drawMap(map: State['map'], ctx: CanvasRenderingContext2D) {
     .forEach((o) => {
       if (o.type === 'spike') {
         ctx.fillStyle = 'red';
-        ctx.fillRect(o.x, o.y, 3, 5);
+        ctx.fillRect(o.x, o.y, 5, 20);
       }
     });
 }
