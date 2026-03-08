@@ -42,7 +42,7 @@ body {
 #canvas.animate {
   display:block;
   background: url("https://static.vecteezy.com/system/resources/previews/001/928/973/original/rural-nature-road-scene-free-vector.jpg") repeat-x;
-  animation: bgScroll 26s linear infinite;
+  animation: bgScroll 22s linear infinite;
   animation-play-state: paused; 
 
   &.running {

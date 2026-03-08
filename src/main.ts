@@ -45,7 +45,9 @@ const initialState = {
     { type: 'spike' as const, x: 110, y: DECK },
     { type: 'spike' as const, x: 160, y: DECK },
     { type: 'spike' as const, x: 200, y: DECK },
-    { type: 'spike' as const, x: 240, y: DECK },
+    { type: 'fatspike' as const, x: 240, y: DECK },
+    { type: 'spike' as const, x: 320, y: DECK },
+    { type: 'spike' as const, x: 360, y: DECK },
     { type: 'portal' as const, x: 80, y: DECK + 10 },
   ],
 };
@@ -108,6 +110,10 @@ function drawMap(map: State['map'], ctx: CanvasRenderingContext2D) {
       if (o.type === 'spike') {
         ctx.fillStyle = 'red';
         ctx.fillRect(o.x, o.y - 10, 5, 20);
+      }
+      if (o.type === 'fatspike') {
+        ctx.fillStyle = 'green';
+        ctx.fillRect(o.x, o.y - 10, 10, 20);
       }
     });
 }
